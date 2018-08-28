@@ -38,13 +38,13 @@ public class AddressBook {
 
     /**
      * Default file path used if the user doesn't provide the file name.
-     */
+            */
     private static final String DEFAULT_STORAGE_FILEPATH = "addressbook.txt";
 
     /**
      * Version info of the program.
      */
-    private static final String VERSION = "AddessBook Level 1 - Version 1.0";
+    private static final String VERSION = "AddressBook Level 1 - Version 1.0.1";
 
     /**
      * A decorative prefix added to the beginning of lines printed by AddressBook
@@ -450,9 +450,12 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeFindPersons(String commandArgs) {
-        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
+        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);        //get the word to comapre
+
         final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
+
         showToUser(personsFound);
+
         return getMessageForPersonsDisplayedSummary(personsFound);
     }
 
@@ -473,6 +476,8 @@ public class AddressBook {
      * @return set of keywords as specified by args
      */
     private static Set<String> extractKeywordsFromFindPersonArgs(String findPersonCommandArgs) {
+        //newstring=findPersonCommandArgs.toUpperCase();
+
         return new HashSet<>(splitByWhitespace(findPersonCommandArgs.trim()));
     }
 
@@ -484,11 +489,23 @@ public class AddressBook {
      */
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
-        for (String[] person : getAllPersonsInAddressBook()) {
+
+        for (String[] person : getAllPersonsInAddressBook()) { //for every person in addressbook
+
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
-                matchedPersons.add(person);
+            //s1.equalsIgnoreCase(s2)==0 means the same
+
+            for (String name: wordsInName){
+                for(String keywordtocompare : keywords){
+                    if (name.equalsIgnoreCase(keywordtocompare)){
+                        matchedPersons.add(person);
+                    }
+                }
             }
+
+            // if (!Collections.disjoint(wordsInName, keywords)) {      // .disjoint() returns true if the two specified collections have no elements in common.
+            //     matchedPersons.add(person);
+            // }
         }
         return matchedPersons;
     }
@@ -1033,7 +1050,7 @@ public class AddressBook {
                 && isPersonPhoneValid(person[PERSON_DATA_INDEX_PHONE])
                 && isPersonEmailValid(person[PERSON_DATA_INDEX_EMAIL]);
     }
-
+//hehe testing
     /*
      * NOTE : =============================================================
      * Note the use of 'regular expressions' in the method below.
